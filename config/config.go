@@ -18,11 +18,9 @@ type Config struct {
 
 func InitConfig() *Config {
 	err := godotenv.Load()
-
 	if err != nil {
 		log.Fatal("Error loading config file")
 	}
-
 	return &Config{
 		PGhost:     os.Getenv("POSTGRES_HOST"),
 		PGdriver:   os.Getenv("POSTGRES_DRIVER"),
