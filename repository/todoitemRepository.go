@@ -96,7 +96,52 @@ func (tr TodoItemRepository) UpdateTodo(todo *model.TodoItem) *model.ResponseErr
 	return nil
 }
 
-func (tr TodoItemRepository) FinishItem(itemId string) *model.ResponseError {
+func (tr TodoItemRepository) GetItem(itemId int) (*model.TodoItem, *model.ResponseError) {
+	query := `
+	SELECT *
+	FROM items,
+	WHERE id = $1`
+
+	var (
+		id, user_id         int
+		description, status string
+	)
+
+	res, err := tr.dbHandler.Query(query, itemId)
+	if err != nil {
+		return nil, &model.ResponseError{
+			Message: err.Error(),
+			Status:  http.StatusInternalServerError,
+		}
+	}
+	defer res.Close()
+
+	for res.Next() {
+		err := res.Scan(&id, &user_id, &description, &status)
+		if err != nil {
+			return nil, &model.ResponseError{
+				Message: err.Error(),
+				Status:  http.StatusInternalServerError,
+			}
+		}
+	}
+
+	if res.Err() != nil {
+		return nil, &model.ResponseError{
+			Message: err.Error(),
+			Status:  http.StatusInternalServerError,
+		}
+	}
+
+	return &model.TodoItem{
+		ID:          id,
+		Description: description,
+		Status:      status,
+		UserID:      user_id,
+	}, nil
+}
+
+func (tr TodoItemRepository) FinishItem(itemId int) *model.ResponseError {
 	query := `
 	UPDATE users
 	SET

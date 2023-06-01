@@ -99,19 +99,17 @@ func (ur UserRepository) UpdateUser(user *model.User) *model.ResponseError {
 	return nil
 }
 
-func (ur UserRepository) DeleteUser(user *model.User) *model.ResponseError {
+func (ur UserRepository) DeleteUser(userId int) *model.ResponseError {
 	query := `DELETE FROM users
 	WHERE $id = $1;`
 
-	res, err := ur.dbHandler.Exec(query, user.ID)
-
+	res, err := ur.dbHandler.Exec(query, userId)
 	if err != nil {
 		return &model.ResponseError{
 			Message: err.Error(),
 			Status:  http.StatusInternalServerError,
 		}
 	}
-
 	rowsAff, err := res.RowsAffected()
 
 	if err != nil {
@@ -181,5 +179,4 @@ type Database interface {
 	CreateUser()
 	UpdateUser()
 	DeleteUser()
-	GetAllUsers()
 }
