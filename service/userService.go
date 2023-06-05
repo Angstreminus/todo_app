@@ -79,14 +79,14 @@ func validateUser(user *model.User) *model.ResponseError {
 		}
 	}
 
-	if user.FirstName == "" || user.FirstName == " " || len(user.FirstName) > 1 {
+	if user.FirstName == "" || user.FirstName == " " {
 		return &model.ResponseError{
 			Message: "Invalid first name value",
 			Status:  http.StatusBadRequest,
 		}
 	}
 
-	if user.LastName == "" || user.LastName == " " || len(user.LastName) > 1 {
+	if user.LastName == "" || user.LastName == " " {
 		return &model.ResponseError{
 			Message: "Invalid last name value",
 			Status:  http.StatusBadRequest,
